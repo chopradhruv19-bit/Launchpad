@@ -322,7 +322,7 @@
 <script>
   // Set this to your deployed Cloud Run URL after you run the deploy step,
   // e.g. "https://launchpad-api-xxxxx-uc.a.run.app"
-  const API_BASE = "YOUR_CLOUD_RUN_URL_HERE";
+  const API_BASE = "https://launchpad-ffx2.onrender.com";
 
   const generateBtn = document.getElementById('generateBtn');
   const outputBox = document.getElementById('outputBox');
@@ -337,7 +337,7 @@
       statusLine.className = 'status-line error';
       return;
     }
-    if(API_BASE === "YOUR_CLOUD_RUN_URL_HERE"){
+    if(API_BASE === "https://launchpad-ffx2.onrender.com"){
       statusLine.textContent = 'Backend not connected yet — deploy the Cloud Run service and update API_BASE.';
       statusLine.className = 'status-line error';
       return;
