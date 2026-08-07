@@ -337,10 +337,6 @@
       statusLine.className = 'status-line error';
       return;
     }
-    if(API_BASE === "https://launchpad-ffx2.onrender.com"){
-      statusLine.textContent = 'Backend not connected yet — deploy the Cloud Run service and update API_BASE.';
-      statusLine.className = 'status-line error';
-      return;
     }
 
     generateBtn.disabled = true;
