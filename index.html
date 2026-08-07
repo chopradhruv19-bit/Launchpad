@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaunchPad — Go from idea to first customer this week</title>
+<meta name="description" content="LaunchPad is an AI co-founder that turns a founder's idea into a business plan, pricing model, and first-customer outreach plan — then checks in weekly.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B1120;
+    --bg-alt: #0F1729;
+    --panel: #131D33;
+    --text: #EDEFF5;
+    --muted: #8B93A7;
+    --muted-dim: #5C6478;
+    --accent: #FF6A3D;
+    --accent-dim: #C94F2A;
+    --accent-2: #2DD4A7;
+    --line: rgba(255,255,255,0.08);
+    --line-bright: rgba(255,255,255,0.16);
+  }
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 26px 26px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wrap{ max-width: 1120px; margin: 0 auto; padding: 0 28px; position: relative; z-index:1; }
+  h1,h2,h3{ font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.02em; }
+  .mono{ font-family: 'IBM Plex Mono', monospace; }
+  a{ color: inherit; }
+
+  /* NAV */
+  header{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(11,17,32,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 18px 28px; max-width: 1120px; margin:0 auto;
+  }
+  .logo{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:1.1rem; }
+  .logo-mark{
+    width:20px; height:20px; border-radius:4px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    flex-shrink:0;
+  }
+  .nav-links{ display:flex; gap: 32px; align-items:center; }
+  .nav-links a{ color: var(--muted); text-decoration:none; font-size:0.92rem; transition: color .2s; }
+  .nav-links a:hover{ color: var(--text); }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding: 10px 20px; border-radius: 8px;
+    font-size: 0.9rem; font-weight:600; text-decoration:none;
+    border:1px solid transparent; cursor:pointer; transition: all .18s;
+  }
+  .btn-accent{ background: var(--accent); color: #0B1120; }
+  .btn-accent:hover{ background: #ff7d55; transform: translateY(-1px); }
+  .btn-ghost{ border-color: var(--line-bright); color: var(--text); background:transparent; }
+  .btn-ghost:hover{ border-color: var(--accent); }
+
+  /* HERO */
+  .hero{ padding: 96px 0 72px; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.78rem; letter-spacing:0.08em;
+    color: var(--accent-2); text-transform:uppercase; margin-bottom:22px;
+  }
+  .eyebrow::before{ content:""; width:7px; height:7px; border-radius:50%; background: var(--accent-2); box-shadow:0 0 8px var(--accent-2); }
+  .hero h1{
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    font-weight: 700; line-height: 1.06; max-width: 780px; margin-bottom: 22px;
+  }
+  .hero h1 em{ font-style:normal; color: var(--accent); }
+  .hero p.lead{ font-size: 1.15rem; color: var(--muted); max-width: 560px; margin-bottom: 34px; }
+  .hero-cta{ display:flex; gap:14px; margin-bottom: 64px; flex-wrap:wrap; }
+
+  /* RUNWAY VISUAL */
+  .runway{
+    border:1px solid var(--line); border-radius:14px; background: var(--panel);
+    padding: 22px 26px; overflow:hidden; position:relative;
+  }
+  .runway-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+  .runway-head .mono{ font-size:0.78rem; color: var(--muted-dim); letter-spacing:0.05em; }
+  .lights{ display:flex; gap:8px; }
+  .lights span{ width:8px; height:8px; border-radius:50%; background: var(--muted-dim); }
+  .runway-track{ display:flex; gap:6px; }
+  .runway-track .marker{
+    flex:1; height: 46px; border-radius:6px;
+    background: var(--bg-alt); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color: var(--muted-dim);
+    animation: lightup 4.5s ease-in-out infinite;
+  }
+  .runway-track .marker:nth-child(1){ animation-delay: 0s; }
+  .runway-track .marker:nth-child(2){ animation-delay: 0.7s; }
+  .runway-track .marker:nth-child(3){ animation-delay: 1.4s; }
+  .runway-track .marker:nth-child(4){ animation-delay: 2.1s; }
+  .runway-track .marker:nth-child(5){ animation-delay: 2.8s; }
+  @keyframes lightup{
+    0%, 60%, 100% { border-color: var(--line); color: var(--muted-dim); background: var(--bg-alt); }
+    15%, 35% { border-color: var(--accent); color: var(--accent); background: rgba(255,106,61,0.08); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .runway-track .marker{ animation: none; }
+  }
+
+  section{ padding: 80px 0; border-top:1px solid var(--line); }
+  .section-head{ max-width: 620px; margin-bottom: 52px; }
+  .section-head .eyebrow{ margin-bottom:14px; }
+  .section-head h2{ font-size: clamp(1.7rem, 3vw, 2.3rem); margin-bottom: 14px; }
+  .section-head p{ color: var(--muted); font-size: 1.02rem; }
+
+  /* HOW IT WORKS - runway steps */
+  .steps{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border:1px solid var(--line); border-radius: 14px; overflow:hidden; }
+  .step{ background: var(--panel); padding: 30px 24px; }
+  .step .num{ font-family:'IBM Plex Mono',monospace; color: var(--accent); font-size:0.85rem; margin-bottom:16px; display:block; }
+  .step h3{ font-size:1.05rem; margin-bottom:10px; }
+  .step p{ color: var(--muted); font-size:0.92rem; }
+  @media (max-width: 860px){ .steps{ grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px){ .steps{ grid-template-columns: 1fr; } }
+
+  /* DEMO */
+  .demo-panel{
+    background: var(--panel); border:1px solid var(--line); border-radius:16px;
+    padding: 32px; display:grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  }
+  @media (max-width: 780px){ .demo-panel{ grid-template-columns: 1fr; } }
+  .demo-panel label{ display:block; font-size:0.82rem; color: var(--muted); margin-bottom:8px; font-family:'IBM Plex Mono',monospace; }
+  .demo-panel textarea, .demo-panel input[type=text]{
+    width:100%; background: var(--bg-alt); border:1px solid var(--line);
+    border-radius:8px; padding:12px 14px; color: var(--text); font-family:'Inter',sans-serif;
+    font-size:0.94rem; resize:vertical; margin-bottom:18px;
+  }
+  .demo-panel textarea:focus, .demo-panel input:focus{ outline:none; border-color: var(--accent); }
+  .demo-panel textarea{ min-height:100px; }
+  .key-row{ display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .key-row a{ color: var(--accent-2); font-size:0.8rem; text-decoration:none; }
+  .key-row a:hover{ text-decoration:underline; }
+  .output-box{
+    background: var(--bg-alt); border:1px solid var(--line); border-radius:10px;
+    padding:20px; min-height: 260px; font-size:0.92rem; white-space:pre-wrap;
+    color: var(--text); overflow-y:auto; max-height: 420px;
+  }
+  .output-box.empty{ color: var(--muted-dim); display:flex; align-items:center; justify-content:center; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:0.82rem; }
+  .status-line{ font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color: var(--muted-dim); margin-top:10px; min-height:16px; }
+  .status-line.active{ color: var(--accent-2); }
+  .status-line.error{ color: #FF7A7A; }
+
+  /* PRICING */
+  .pricing-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 700px){ .pricing-grid{ grid-template-columns: 1fr; } }
+  .price-card{ border:1px solid var(--line); border-radius:14px; padding:32px; background: var(--panel); }
+  .price-card.highlight{ border-color: var(--accent); position:relative; }
+  .price-card .tier{ font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color: var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px; }
+  .price-card .amount{ font-family:'Space Grotesk',sans-serif; font-size:2.2rem; font-weight:700; margin-bottom:4px; }
+  .price-card .amount span{ font-size:0.95rem; color: var(--muted); font-weight:400; }
+  .price-card ul{ list-style:none; margin: 22px 0 26px; }
+  .price-card li{ padding:8px 0; color: var(--muted); font-size:0.92rem; border-top:1px solid var(--line); }
+  .price-card li:first-child{ border-top:none; }
+  .price-card li::before{ content:"→ "; color: var(--accent-2); }
+
+  footer{ padding: 40px 0; border-top:1px solid var(--line); }
+  .footer-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+  .footer-row .mono{ font-size:0.78rem; color: var(--muted-dim); }
+
+  ::selection{ background: var(--accent); color: #0B1120; }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="logo"><span class="logo-mark"></span>LaunchPad</div>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#demo">Try it</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <a href="#demo" class="btn btn-accent">Get your plan</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">For first-time founders</div>
+    <h1>Turn your idea into a business this week, not next quarter.</h1>
+    <p class="lead">LaunchPad is an AI co-founder. Describe your idea in plain language and get a real business plan, pricing model, and a message to send your first 10 customers — then it checks in weekly to tell you what to do next.</p>
+    <div class="hero-cta">
+      <a href="#demo" class="btn btn-accent">Generate my plan — free</a>
+      <a href="#how" class="btn btn-ghost">See how it works</a>
+    </div>
+
+    <div class="runway">
+      <div class="runway-head">
+        <span class="mono">MISSION STATUS</span>
+        <div class="lights"><span></span><span></span><span></span></div>
+      </div>
+      <div class="runway-track">
+        <div class="marker">IDEA</div>
+        <div class="marker">PLAN</div>
+        <div class="marker">PRICE</div>
+        <div class="marker">CUSTOMERS</div>
+        <div class="marker">LAUNCH</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">The runway</div>
+      <h2>Four real steps, not a generic chatbot.</h2>
+      <p>Every founder who uses LaunchPad moves through the same sequence — each step builds on what came before it, and the AI remembers where you left off.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="num mono">01</span>
+        <h3>Describe your idea</h3>
+        <p>Tell LaunchPad what you want to build and who it's for, in your own words — no forms, no jargon.</p>
+      </div>
+      <div class="step">
+        <span class="num mono">02</span>
+        <h3>Get a real plan</h3>
+        <p>A one-page business plan and a simple pricing model, built from your specific idea, not a generic template.</p>
+      </div>
+      <div class="step">
+        <span class="num mono">03</span>
+        <h3>Reach first customers</h3>
+        <p>An outreach message and a shortlist of where to post it, so day one isn't spent staring at a blank page.</p>
+      </div>
+      <div class="step">
+        <span class="num mono">04</span>
+        <h3>Weekly check-in</h3>
+        <p>Report your progress and LaunchPad tells you the one thing to focus on next — and flags when to talk to a real advisor.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Try it live</div>
+      <h2>Describe a real idea. Get a real plan back.</h2>
+      <p>This calls a Cloud Run backend, which talks to Gemini on your behalf — no API key needed here, nothing but Google infrastructure end to end.</p>
+    </div>
+
+    <div class="demo-panel">
+      <div>
+        <label for="idea">Your business idea</label>
+        <textarea id="idea" placeholder="e.g. I want to help small bakeries take custom cake orders online instead of over WhatsApp, and manage order deadlines automatically.">I want to help small bakeries take custom cake orders online instead of over WhatsApp, and manage order deadlines automatically.</textarea>
+
+        <button class="btn btn-accent" id="generateBtn" style="width:100%; justify-content:center;">Generate my plan</button>
+        <div class="status-line" id="statusLine"></div>
+      </div>
+
+      <div>
+        <label>Your plan</label>
+        <div class="output-box empty" id="outputBox">Your business plan will appear here once generated.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Pricing</div>
+      <h2>Free to start. Pay when you're actually building.</h2>
+      <p>The first plan is free for every founder. Ongoing advisory and weekly check-ins are for founders who are past the idea and into execution.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="tier">Free</div>
+        <div class="amount">$0</div>
+        <ul>
+          <li>One business plan generation</li>
+          <li>One pricing model</li>
+          <li>One customer outreach message</li>
+        </ul>
+        <a href="#demo" class="btn btn-ghost" style="width:100%; justify-content:center;">Start free</a>
+      </div>
+      <div class="price-card highlight">
+        <div class="tier">Founder</div>
+        <div class="amount">$19<span>/month</span></div>
+        <ul>
+          <li>Unlimited plan revisions</li>
+          <li>Weekly AI check-ins on your progress</li>
+          <li>Pitch deck export</li>
+          <li>Priority flag to a real advisor when needed</li>
+        </ul>
+        <a href="#demo" class="btn btn-accent" style="width:100%; justify-content:center;">Start Founder trial</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-row">
+    <div class="logo"><span class="logo-mark"></span>LaunchPad</div>
+    <span class="mono">Built with the Gemini API · Google Cloud</span>
+  </div>
+</footer>
+
+<script>
+  // Set this to your deployed Cloud Run URL after you run the deploy step,
+  // e.g. "https://launchpad-api-xxxxx-uc.a.run.app"
+  const API_BASE = "YOUR_CLOUD_RUN_URL_HERE";
+
+  const generateBtn = document.getElementById('generateBtn');
+  const outputBox = document.getElementById('outputBox');
+  const statusLine = document.getElementById('statusLine');
+  const ideaInput = document.getElementById('idea');
+
+  async function generatePlan(){
+    const idea = ideaInput.value.trim();
+
+    if(!idea){
+      statusLine.textContent = 'Describe your idea first.';
+      statusLine.className = 'status-line error';
+      return;
+    }
+    if(API_BASE === "YOUR_CLOUD_RUN_URL_HERE"){
+      statusLine.textContent = 'Backend not connected yet — deploy the Cloud Run service and update API_BASE.';
+      statusLine.className = 'status-line error';
+      return;
+    }
+
+    generateBtn.disabled = true;
+    generateBtn.textContent = 'Generating…';
+    statusLine.textContent = 'Contacting LaunchPad backend…';
+    statusLine.className = 'status-line active';
+    outputBox.className = 'output-box empty';
+    outputBox.textContent = 'Working on it…';
+
+    try{
+      const res = await fetch(API_BASE + '/generate-plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idea })
+      });
+
+      if(!res.ok){
+        const errText = await res.text();
+        throw new Error('Backend error ' + res.status + ': ' + errText.slice(0, 200));
+      }
+
+      const data = await res.json();
+      outputBox.className = 'output-box';
+      outputBox.textContent = data.plan || 'No response generated — try rephrasing your idea.';
+      statusLine.textContent = data.flagged ? 'Flagged for human review.' : 'Plan generated.';
+      statusLine.className = 'status-line active';
+    } catch(err){
+      outputBox.className = 'output-box empty';
+      outputBox.textContent = 'Could not generate a plan. Please try again shortly.';
+      statusLine.textContent = err.message;
+      statusLine.className = 'status-line error';
+    } finally {
+      generateBtn.disabled = false;
+      generateBtn.textContent = 'Generate my plan';
+    }
+  }
+
+  generateBtn.addEventListener('click', generatePlan);
+</script>
+
+</body>
+</html>
