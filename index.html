@@ -320,8 +320,6 @@
 </footer>
 
 <script>
-  // Set this to your deployed Cloud Run URL after you run the deploy step,
-  // e.g. "https://launchpad-api-xxxxx-uc.a.run.app"
   const API_BASE = "https://launchpad-ffx2.onrender.com";
 
   const generateBtn = document.getElementById('generateBtn');
@@ -336,7 +334,6 @@
       statusLine.textContent = 'Describe your idea first.';
       statusLine.className = 'status-line error';
       return;
-    }
     }
 
     generateBtn.disabled = true;
