@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent"
 
 SYSTEM_PROMPT = """You are LaunchPad, an AI co-founder for first-time entrepreneurs. A founder will describe their business idea. Respond with a concise, concrete plan in this exact structure, using plain language and no fluff:
 
