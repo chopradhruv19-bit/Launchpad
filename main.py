@@ -80,13 +80,25 @@ def generate_plan():
     }
     headers = {"Content-Type": "application/json", "x-goog-api-key": GEMINI_API_KEY}
 
-    try:
-        resp = requests.post(GEMINI_URL, json=payload, headers=headers, timeout=30)
-    except requests.RequestException as exc:
-        return jsonify({"error": "gemini_unreachable", "detail": str(exc)}), 502
+    import time
+    resp = None
+    last_error_text = ""
+    for attempt in range(3):
+        try:
+            resp = requests.post(GEMINI_URL, json=payload, headers=headers, timeout=30)
+        except requests.RequestException as exc:
+            return jsonify({"error": "gemini_unreachable", "detail": str(exc)}), 502
 
-    if resp.status_code != 200:
-        return jsonify({"error": "gemini_error", "detail": resp.text[:300]}), 502
+        if resp.status_code == 200:
+            break
+        last_error_text = resp.text[:300]
+        if resp.status_code in (503, 429) and attempt < 2:
+            time.sleep(2 * (attempt + 1))
+            continue
+        break
+
+    if resp is None or resp.status_code != 200:
+        return jsonify({"error": "gemini_error", "detail": last_error_text or "Gemini is temporarily overloaded. Please try again in a moment."}), 502
 
     body = resp.json()
     try:
